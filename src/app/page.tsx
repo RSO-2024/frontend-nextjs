@@ -1,5 +1,7 @@
 import { Navbar } from "./components/Navbar"
 import { Metadata } from "next"
+import { Card } from "./components/ui/Card"
+import Hero from "./components/ui/Hero"
 
 export const metadata: Metadata = {
   title: 'Clutchbids',
@@ -10,8 +12,6 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return(
-    <div>
-      <h1>Home</h1>
-    </div>
+      <Hero/>
   )
 }

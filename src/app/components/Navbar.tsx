@@ -39,8 +39,8 @@ export function Navbar() {
             <NavbarLinks/>
         
             <div className="flex items-center justify-end gap-5 ms-auto">
-                <Button className="font-bold hover:text-black"><Link href={'/login'}>Sign In</Link></Button>
-                <Button className="font-bold hover:bg-cyan-400 hover:text-white" variant={"secondary"}><Link href={'/register'}>Sign Up</Link></Button>
+                <Link href={'/login'}><Button className="font-bold hover:text-gray-500">Sign In</Button></Link>
+                <Link href={'/register'}><Button className="text-gray-600 font-bold hover:bg-gray-200 hover:text-orange-500" variant={"secondary"}>Sign Up</Button></Link>
                 
                     <DropdownMenu>
                     <DropdownMenuTrigger className="focus:outline-none">

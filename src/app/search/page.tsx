@@ -1,5 +1,7 @@
+import { Card } from "../components/ui/Card"
+
 export default function Search() {
     return (
-        <h1>Search</h1>
+        <h1>search</h1>
     )
 }
