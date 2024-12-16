@@ -11,18 +11,18 @@ export const navbarElements = [
     },
     {
         key: 1,
-        href: '/hot',
-        name: 'Hot',
+        href: '/about',
+        name: 'About',
     },
     {
         key: 2,
-        href: '/p2p',
-        name: 'Peer 2 Peer',
+        href: '/auctions',
+        name: 'Auctions',
     },
     {
         key: 3,
-        href: '/best-value',
-        name: 'Best Value',
+        href: '/flash-auctions',
+        name: 'Flash Auctions',
     }
 ];
 
@@ -31,7 +31,7 @@ export function NavbarLinks() {
     const location = usePathname()
 
     return (
-    <div className="hidden md:flex justify-center items-center 
+    <div className="hidden md:flex md:justify-center items-center 
     gap-8 col-span-7 font-semibold text-gray-500">
         {navbarElements.map((item) => 
             (<Link className={cn(

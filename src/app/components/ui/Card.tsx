@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react'
+import { useState } from 'react';
 import { Countdown } from './Countdown';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -15,35 +16,39 @@ interface CardProps {
     gas: string;
     currentPrice: string;
     timeLeft: number;
+    location: string;
 }
 
 export const Card: React.FC<CardProps> = ({
     imageUrl, carMake, carModel,
     carYear, carMilage, transmission, 
-    gas, currentPrice, timeLeft }) => {
+    gas, currentPrice, timeLeft, location }) => {
+
+    const [mouseOn, setMouseOn] = useState(false)
+
     return (
-        <div className="w-[280px] h-[320px] border border-gray-300
+        <div className="w-[280px] h-[340px] border border-gray-300
         rounded-lg flex flex-col items-center overflow-hidden hover:shadow-lg
         transition-all duration-200 hover:scale-105
         hover:border-gray-400">
-            <div className="h-[600px] overflow-hidden">
+            <div className="h-[200px] overflow-hidden">
                 <img src={imageUrl} alt="" className="object-cover w-full h-full" />
             </div>
 
             <div className='w-full flex items-baseline justify-between px-2 py-2
             font-semibold text-sm'>
-                <div className='border border-gray-300 p-1 rounded-md px-2'>
+                <div className='border border-gray-300 p-1 rounded-md px-2 hover:cursor-default'>
                     <h1>{carMake} {carModel}</h1>
                 </div>
 
-                <div className='border border-gray-300 p-1 rounded-md px-2'>
+                <div className='border border-gray-300 p-1 rounded-md px-2 hover:cursor-default'>
                     <h1>{carYear}</h1>
                 </div>  
             </div>
 
             <div className='w-full flex items-center justify-evenly text-[12px] font-medium'>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-center hover:cursor-default">
                     <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="24px"
@@ -56,7 +61,7 @@ export const Card: React.FC<CardProps> = ({
                     <h1 className="mt-2 text-center">{`${carMilage} km`}</h1>
                 </div>
                 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-center hover:cursor-default">
                     <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     height="24px" viewBox="0 -960 960 960" 
@@ -66,7 +71,7 @@ export const Card: React.FC<CardProps> = ({
                     <h1 className="mt-2 text-center">{transmission}</h1>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-center hover:cursor-default">
                     <svg xmlns="http://www.w3.org/2000/svg" 
                     height="24px" viewBox="0 -960 960 960" 
                     width="24px" fill="grey">
@@ -76,17 +81,37 @@ export const Card: React.FC<CardProps> = ({
                 </div>
             </div>
 
-            <div className='h-full flex justify-between gap-2 py-2'>
+            <div className='h-[55px] flex justify-between gap-2 pt-2 hover:cursor-default'>
 
                 <div className='w-[160px]'>
-                <Countdown duration={timeLeft}/></div>
+                <Countdown duration={timeLeft}/>
+                </div>
 
-                <div className='col-span-1 justify-self-end'>
-                <Link href="#"><Button variant={'outline'}
-                className='hover:bg-orange-400 hover:text-white'>
-                {`${currentPrice} €`}</Button></Link></div>
+                <div>
+                <Link href="#"><Button variant={'outline'} 
+                onMouseEnter={() => {setMouseOn(true)}}
+                onMouseLeave={() => {setMouseOn(false)}}
+                className='hover:bg-orange-400 hover:text-white w-[90px] text-[12px]'>
+                <svg xmlns="http://www.w3.org/2000/svg" height="0px" viewBox="0 -960 960 960" width="20px" fill={`${mouseOn? 'white' : 'gray'}`}><path d="M600-120q-118 0-210-67T260-360H120v-80h122q-2-11-2-20v-40q0-9 2-20H120v-80h140q38-106 130-173t210-67q69 0 130.5 24T840-748l-70 70q-35-29-78.5-45.5T600-740q-75 0-136.5 38.5T370-600h230v80H344q-2 11-3 20t-1 20q0 11 1 20t3 20h256v80H370q32 63 93.5 101.5T600-220q48 0 92.5-16.5T770-282l70 70q-48 44-109.5 68T600-120Z"/></svg>
+                {mouseOn ? "Bid" : currentPrice}</Button></Link>
+                </div>
 
             </div>
+
+            <div className='flex items-center justify-between w-full px-1'>
+                <div className='flex h-[50px] gap-1 items-center text-[13px] font-medium pl-2 hover:cursor-default'>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="gray"><path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"/></svg>
+                    <h1>{location}</h1>
+                </div>
+
+            <div>
+                <span className="inline-flex items-center rounded-md bg-red-50 mr-2 px-1 py-1 text-xs font-medium text-orange-700 ring-1 ring-inset ring-orange-700/10 hover:cursor-default">
+                    Top% Offer
+                </span>
+            </div>
+            </div>
+
+
         </div>
     )
 }

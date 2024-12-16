@@ -1,9 +1,43 @@
 "use client"
+import React from 'react';
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
+import { signIn, delay } from '../client';
+import { useRouter } from 'next/navigation';
+
+
 export default function Login() {
 
-  const { toast } = useToast()
+  const { toast } = useToast();
+  const router = useRouter()
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const { data, error } = await signIn(email, password);
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+      return; 
+    } else {
+      toast({
+        title: 'Success',
+        description: 'You are signed in.',
+        className: 'bg-green-500'
+      });
+
+  
+      router.push('/')
+    }
+  };
+
 
   return (
     <>
@@ -35,7 +69,7 @@ export default function Login() {
 
             <div className="mt-10">
               <div>
-                <form action="#" method="POST" className="space-y-6">
+                <form onSubmit={handleSignIn} method="POST" className="space-y-6">
                   <div>
                     <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
                       Email address
@@ -193,7 +227,7 @@ export default function Login() {
           <img
             alt=""
             src="./tesla1.jpg"
-            className="absolute inset-0 size-full object-cover"
+            className="absolute inset-0 size-full object-cover rounded-tl-[50px] rounded-bl-[50px] overflow-hidden"
           />
         </div>
       </div>

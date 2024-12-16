@@ -1,11 +1,39 @@
 "use client"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
+import { supabase, signUp } from "../client"
+import { useRouter } from "next/navigation"
 
 
 export default function Register() {
 
-    const { toast } = useToast()
+  const { toast } = useToast()
+  const router = useRouter()
+
+  const register = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const { data, error } = await signUp(email, password);
+
+    if (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+      return;
+    }
+
+    toast({
+      variant: 'default',
+      title: 'Success',
+      description: `Account created! Proceed to ${email} to verify your account.`,
+    });
+    router.push('/')
+  };
 
     return (
       <>
@@ -25,8 +53,8 @@ export default function Register() {
             <img
               alt=""
               src='./bmw1.jpg'
-              className="absolute inset-0 size-full object-cover"
-            />
+              className="absolute inset-0 size-full object-cover rounded-tr-[50px] rounded-br-[50px] overflow-hidden"
+              />
           </div>
 
         <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
@@ -48,7 +76,7 @@ export default function Register() {
 
             <div className="mt-10">
               <div>
-                <form action="#" method="POST" className="space-y-2">
+                <form onSubmit={register} method="POST" className="space-y-2">
 
                 <div className="flex">
 
