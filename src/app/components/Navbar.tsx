@@ -56,7 +56,7 @@ export function Navbar() {
     return(
         <nav className="w-full flex justify-between
         items-cente md:grid md:grid-cols-12 px-4 md:px-8
-        mx-auto py-7"> 
+        mx-auto py-7 sticky top-0 bg-white z-10"> 
             <div className="md:col-span-3">
                 <Link href={'/'}>
                     <div className="flex items-center gap-2">
@@ -71,10 +71,13 @@ export function Navbar() {
             <NavbarLinks/>
         
             <div className="flex items-center justify-end gap-5 ms-auto">
-                
-                <Link href={'/login'}><Button className="font-bold hover:text-gray-100">Sign In</Button></Link>
-                <Link href={'/register'}><Button className="text-gray-600 font-bold hover:bg-gray-200
-                 hover:text-orange-500 hidden lg:block" variant={"secondary"}>Sign Up</Button></Link>
+                {!user?
+                ( <>
+                  <Link href={'/login'}><Button className="font-bold hover:text-gray-100">Sign In</Button></Link>
+                  <Link href={'/register'}><Button className="text-gray-600 font-bold hover:bg-gray-200
+                   hover:text-orange-500 hidden lg:block" variant={"secondary"}>Sign Up</Button></Link>
+                   </>
+                ) : (<></>)}
                     <DropdownMenu>
                     <DropdownMenuTrigger className="focus:outline-none">
                     <div className="border border-gray-300 rounded-full

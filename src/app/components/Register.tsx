@@ -30,9 +30,9 @@ export default function Register() {
     toast({
       variant: 'default',
       title: 'Success',
-      description: `Account created! Proceed to ${email} to verify your account.`,
+      description: `Account created! Proceed to ${email} to verify your account and then sign in.`,
     });
-    router.push('/')
+    router.push('/login')
   };
 
     return (
