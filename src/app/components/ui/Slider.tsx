@@ -7,35 +7,42 @@ import { EuroIcon } from "lucide-react";
 
 const SliderInputSync: React.FC = () => {
   const [sliderValue, setSliderValue] = useState<number>(10000);
- 
+
 
   const formatNumber = (value: number): string => {
-    // Manually format the number with a custom thousands separator
     return value
       .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, "'"); // Insert ' as thousands separator
+      .replace(/\B(?=(\d{3})+(?!\d))/g, "'"); // Format with ' as the thousands separator
   };
 
-  const [inputValue, setInputValue] = useState<string>(formatNumber(10000));
+  const parseFormattedNumber = (value: string): number => {
+    return parseInt(value.replace(/'/g, ""), 10) || 0; // Remove all ' and parse as number
+  };
+
+  const [inputValue, setInputValue] = useState<string>(formatNumber(sliderValue));
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let value = event.target.value.replace(/[^0-9']/g, ""); // Remove everything except digits and ' for grouping
-    // Remove unnecessary ' symbols, keeping the valid ones
-    value = value.replace(/(?<=\d)'+(?=\d)/g, ""); // Remove extra ' between digits
-    const numericValue = parseInt(value.replace(/'/g, ""), 10); // Remove all ' symbols to get a numeric value
+    const rawValue = event.target.value;
+    setInputValue(rawValue); // Update input value immediately
+
+    const numericValue = parseFormattedNumber(rawValue);
 
     if (!isNaN(numericValue)) {
-      const clampedValue = Math.min(500000, Math.max(10000, numericValue)); // Ensure the value is within the valid range
-      setSliderValue(clampedValue);
-      setInputValue(formatNumber(clampedValue)); // Format and update input field
-    } else {
-      setInputValue(value); // If it's not a valid number, just update the raw value in input
+      const clampedValue = Math.min(200000, Math.max(10000, numericValue));
+      setSliderValue(clampedValue); // Sync slider with validated number
     }
+  };
+
+  const handleInputBlur = () => {
+    const numericValue = parseFormattedNumber(inputValue);
+    const clampedValue = Math.min(200000, Math.max(10000, numericValue));
+    setInputValue(formatNumber(clampedValue)); // Ensure input is properly formatted
   };
 
   const handleSliderChange = (value: number[]) => {
     const newValue = value[0];
     setSliderValue(newValue);
-    setInputValue(formatNumber(newValue)); // Sync slider with input value
+    setInputValue(formatNumber(newValue)); // Sync input with slider
   };
 
   return (
@@ -45,15 +52,16 @@ const SliderInputSync: React.FC = () => {
           value={[sliderValue]} // Pass the value as an array
           min={5}
           max={200000}
-          step={1000}
+          step={1}
           onValueChange={handleSliderChange} // Handle slider change
           className="w-full"
         />
         <div className="flex items-center space-x-2">
           <Input
             type="text"
-            value={inputValue} // Update input value with formatted number
-            onChange={handleInputChange} // Sync input with number
+            value={inputValue} // Display formatted input value
+            onChange={handleInputChange} // Update on user input
+            onBlur={handleInputBlur} // Format input on blur
             className="w-full p-2 border rounded-md text-gray-900"
           />
           <span className="text-gray-500 text-lg">
@@ -66,5 +74,3 @@ const SliderInputSync: React.FC = () => {
 };
 
 export default SliderInputSync;
-
-

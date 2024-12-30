@@ -7,7 +7,7 @@ import Footer from './Footer'
 export default function Hero() {
     return (
 
-    <div className="flex flex-col md:flex-col lg:flex-row justify-between items-center">
+    <div className="flex flex-col md:flex-col lg:flex-row justify-between items-center pt-[20px]">
 
         <div className="max-w-lg mt-10 lg:mt-0 lg:ml-28 md:pb-32">
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">

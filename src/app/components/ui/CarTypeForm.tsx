@@ -9,6 +9,7 @@ import DragDropImageUpload from './DragDrop'
 import YearSelectCombobox from './TimePicker'
 import OptionPicker from './OptionPicker'
 import SliderInputSync from './Slider'
+import { Button } from '@/components/ui/button'
 
 interface CarMake {
   make: string;
@@ -26,6 +27,17 @@ export default function CarMakeModelCombobox() {
   const [selectedModel, setSelectedModel] = useState<CarModel | null>(null)
   const [carMakes, setCarMakes] = useState<CarMake[]>([])
   const [carModels, setCarModels] = useState<CarModel[]>([])
+
+
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const handleCheckboxToggle = () => {
+    setIsChecked((prev) => !prev);
+  };
+
+  const imageSource = isChecked
+    ? "/path/to/checked-image.png" // Image source when checked
+    : "/path/to/unchecked-image.png"; // Image source when unchecked
 
   // Load car makes from JSON
   useEffect(() => {
@@ -125,15 +137,48 @@ export default function CarMakeModelCombobox() {
 
       </div>
 
-      <SliderInputSync/>
+      <div className='flex w-full justify-between'>
+      <div className='flex flex-col'>
+        <h1></h1>
+        <SliderInputSync/>
+      </div>
+
+      <div className="flex flex-col items-center space-y-4 pr-[40px]">
+      <div className="flex items-center space-x-4">
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={!isChecked}
+            onChange={handleCheckboxToggle}
+            className="form-checkbox"
+          />
+          <span>Auction</span>
+        </label>
+
+        <label className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={handleCheckboxToggle}
+            className="form-checkbox"
+          />
+          <span>Listing</span>
+        </label>
+      </div>
+    </div>
+      </div>
 
       <Textarea placeholder='Enter a short description of your vehicle'/>
 
       </div>
+
+      <div className='flex w-full justify-center'><Button type="submit" className="mt-4 w-[60%]">Submit</Button></div>
+      
+      
       </form>
     </div>
 
-  <img src="/auction.webp" width={1200} alt="" className='rounded-tl-[60px] rounded-bl-[60px]' />
+  <img src={isChecked? "/listing.webp" : "/auction.webp"} width={1200} alt="" className='rounded-tl-[60px] rounded-bl-[60px]' />
 
   </div>
   );
