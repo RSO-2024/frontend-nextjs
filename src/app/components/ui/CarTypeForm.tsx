@@ -72,7 +72,7 @@ export default function CarMakeModelCombobox() {
 
     const token = await fetchToken();
     console.log(token);
-    const res = await postCarToServer(formData, token);
+    const res = await postCarToServer(formData, token!);
     console.log(res);
   };
 
