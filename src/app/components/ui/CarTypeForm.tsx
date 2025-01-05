@@ -10,6 +10,8 @@ import YearSelectCombobox from './TimePicker'
 import OptionPicker from './OptionPicker'
 import SliderInputSync from './Slider'
 import { Button } from '@/components/ui/button'
+import { postCarToServer } from '@/lib/postCarToServer'
+import { fetchToken, fetchUser } from '@/app/client'
 
 interface CarMake {
   make: string;
@@ -19,6 +21,7 @@ interface CarMake {
 interface CarModel {
   model: string;
 }
+
 
 export default function CarMakeModelCombobox() {
   const [queryMake, setQueryMake] = useState('');
@@ -35,7 +38,7 @@ export default function CarMakeModelCombobox() {
     setIsChecked((prev) => !prev);
   };
 
-  const baseURL: string =  'https://rso.poklikaj.si/api/p2p/listings/data';
+  const baseURL: string =  'http://rso.poklikaj.si/api/p2p/listings/data';
 
   useEffect(() => {
     import('../../../data/carData.json')
@@ -67,24 +70,10 @@ export default function CarMakeModelCombobox() {
       description,
     };
 
-    try {
-      const response = await fetch(`${baseURL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-
-      const result = await response.json();
-      console.log('Form submitted successfully:', result);
-    } catch (error) {
-      console.error('Error submitting form:', error.message);
-    }
+    const token = await fetchToken();
+    console.log(token);
+    const res = await postCarToServer(formData, token);
+    console.log(res);
   };
 
   return (

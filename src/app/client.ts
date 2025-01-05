@@ -15,6 +15,16 @@ export const fetchUser = async () => {
     }
 }
 
+export const fetchToken = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session?.access_token) {
+        return session.access_token
+    } else {
+        return null
+    }
+}
+
 export const signIn = async (email: string, password: string) => {
 
     const {data, error} = await supabase.auth.signInWithPassword({email, password})
