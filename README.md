@@ -2,7 +2,7 @@
 # Frontend Next.js
 
 **Kratek opis:**  
-Frontend aplikacija zgrajena na **Next.js** okvirju. Uporablja **Tailwind CSS** za stiliranje, **ESLint** za zagotavljanje kakovostne kode in **Sentry** za nadzor napak.
+Frontend aplikacija zgrajena na **Next.js** ogrodju. Uporablja **Tailwind CSS**, **ESLint** in **Sentry** za nadzor napak.
 
 ## 📁 Arhitektura projekta  
 - **/app:** Aplikacija.  
