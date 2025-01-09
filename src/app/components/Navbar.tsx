@@ -28,7 +28,6 @@ export function Navbar() {
     useEffect(() => {
       
       const user = fetchUser()
-  
      
       const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN') {
