@@ -1,3 +1,4 @@
+'use server';
 import axios from 'axios';
 
 // Definiraj tip za podatke
@@ -91,11 +92,11 @@ export async function getBestValueCars() {
 }
 
 
-export async function getBestValueCarById(id: string) {
-    //console.log(id)
-    if(id){
-    const response = await axios.post('https://poklikaj.top/api/best-value/auctions/graphql', {
-        query: `
+export async function getBestValueCarById(id: string, token: string | null) {
+    console.log(id)
+    if (id && token) {
+        const response = await axios.post('https://poklikaj.top/api/best-value/auctions/graphql', {
+            query: `
 query AuctionListing {
     auctionListing(id: "${id}") {
         id
@@ -117,7 +118,6 @@ query AuctionListing {
         location
         possiblePrice
         deliveryPrice
-        reservedPrice
         deliveryWindowStart
         deliveryWindowEnd
         photos {
@@ -131,9 +131,47 @@ query AuctionListing {
 }
 
         `
-    });
-    //console.log(response.data);
-    return response.data.data.auctionListing;
+        });
+        //console.log(response.data);
+        return response.data.data.auctionListing;
+    } else {
+        const response = await axios.post('https://poklikaj.top/api/best-value/auctions/graphql', {
+            query: `
+query AuctionListing {
+    auctionListing(id: "${id}") {
+        id
+        created_at
+        vendor
+        vendorId
+        title
+        url
+        firstReg
+        mileage
+        fuel
+        transmission
+        kw
+        engineSize
+        vin
+        color
+        vat
+        margin
+        location
+        deliveryWindowStart
+        deliveryWindowEnd
+        photos {
+            id
+            created_at
+            auction_listing_id
+            img
+            number
+        }
+    }
 }
+
+        `
+        });
+        //console.log(response.data);
+        return response.data.data.auctionListing;
+    }
 
 }
