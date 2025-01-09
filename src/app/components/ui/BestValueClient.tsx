@@ -8,6 +8,7 @@ import { HeartIcon as SolidHeartIcon } from "@heroicons/react/24/solid";
 import { supabase, fetchUser, fetchToken } from "@/app/client";
 // Import the getBestValueCarById function directly
 import { getBestValueCarById } from "@/lib/getBestValueFilters";
+import { set } from "date-fns";
 
 // Define TypeScript interfaces for type safety
 interface Photo {
@@ -37,6 +38,8 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+
+
 export default function BestValueClient({ id }: { id: string }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,6 +47,18 @@ export default function BestValueClient({ id }: { id: string }) {
 
   const [userId, setUserId] = useState<string | null>(null);
   const [favorite, setFavorite] = useState<boolean>(false);
+  const [newPrice, setNewPrice] = useState<number>(0);
+  const handleInserts = (payload: any) => {
+    console.log('Change received!', payload)
+    setNewPrice(payload.new.possiblePrice)
+    console.log(payload.new.possiblePrice)
+  }
+  supabase
+  .channel('auction_listings')
+  .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'auction_listings' }, handleInserts)
+  .subscribe()
+
+
   useEffect(() => {
     if (!id || typeof id !== "string") {
       setError("Invalid product ID.");
@@ -77,6 +92,7 @@ export default function BestValueClient({ id }: { id: string }) {
           id as string,
           token
         );
+        setNewPrice(data!.possiblePrice)
         if (!data) {
           throw new Error("Product not found.");
         }
@@ -171,7 +187,7 @@ export default function BestValueClient({ id }: { id: string }) {
               <h2 className="sr-only">Product information</h2>
               {product.possiblePrice ? (
                 <p className="text-3xl tracking-tight text-gray-900">
-                  Possible price: €{product.possiblePrice.toLocaleString()}
+                  Possible price: €{newPrice!.toLocaleString()}
                 </p>
               ) : (
                 <p className="text-3xl tracking-tight text-gray-900">
@@ -228,7 +244,7 @@ export default function BestValueClient({ id }: { id: string }) {
                       {product.possiblePrice && (
                         <DataField
                           label="Possible Price"
-                          value={`€${product.possiblePrice.toLocaleString()}`}
+                          value={`€${newPrice!.toLocaleString()}`}
                         />
                       )}
                       {product.deliveryPrice && (
