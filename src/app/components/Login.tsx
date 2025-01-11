@@ -2,12 +2,17 @@
 import React from 'react';
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
-import { signIn, delay } from '../client';
+import { signIn, delay, supabase } from '../client';
 import { useRouter } from 'next/navigation';
 
 
 export default function Login() {
 
+  async function signInWithGithub() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+    })
+  }
   const { toast } = useToast();
   const router = useRouter()
 
@@ -201,11 +206,7 @@ export default function Login() {
 
                   <button
                     onClick={() => {
-                      toast({
-                        variant: "destructive",
-                        title: "Error",
-                        description: "You fucked up",
-                      })
+                      signInWithGithub()
                     }}
                     className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
                   >

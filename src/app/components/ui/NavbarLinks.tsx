@@ -23,6 +23,11 @@ export const navbarElements = [
         key: 3,
         href: '/flash-auctions',
         name: 'Flash Auctions',
+    },
+    {
+        key: 4,
+        href: '/best-value',
+        name: 'Best value Auctions',
     }
 ];
 
