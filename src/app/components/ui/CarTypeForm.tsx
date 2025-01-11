@@ -13,6 +13,7 @@ import { postCarToServer, postAuctionToServer } from '@/lib/postCarToServer'
 import { fetchToken, fetchUser } from '@/app/client'
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/app/client'
 
 interface CarMake {
   make: string;
@@ -98,13 +99,14 @@ export default function CarMakeModelCombobox() {
     e.preventDefault();
 
     const user = await fetchUser();
+    const fileName = `${Date.now()}-${uploadedImages[0].file.name}`;
 
     const formData = {
       user_id: user!.id,
       title: selectedMake?.make + ' ' + queryModel,
       description: description,
       user_price: Number(price),
-      seo_tag: '',
+      seo_tag: "https://wunebpnwieaadhsethca.supabase.co/storage/v1/object/public/p2pImages/" + fileName,
       seo_desc: '',
       firstReg: '08/12/'+firstRegistrationYear,
       man_year: '08/12/'+manufactureYear,
@@ -121,6 +123,17 @@ export default function CarMakeModelCombobox() {
 
     const token = await fetchToken();
     const result = await postCarToServer(formData, token!);
+        
+        const { data, error } = await supabase.storage
+          .from('p2pImages') 
+          .upload(fileName, uploadedImages[0].file);
+      
+        if (error) {
+          console.error('Upload error:', error.message);
+          return null;
+        }
+      
+        console.log('Uploaded image path:', data.path);
   
     if (result.success) {
       if (isAuction) {
