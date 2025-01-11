@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { postCarToServer, postAuctionToServer } from '@/lib/postCarToServer'
 import { fetchToken, fetchUser } from '@/app/client'
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/app/client'
 
 interface CarMake {
