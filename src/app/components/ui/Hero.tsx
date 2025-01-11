@@ -18,7 +18,7 @@ export default function Hero() {
            
           </p>
           <div className="mt-6 flex gap-4">
-          <Link href={'#'}><Button className="font-bold hover:text-gray-100">Bid on Auctions</Button></Link>
+          <Link href={'/best-value/'}><Button className="font-bold hover:text-gray-100">Bid on Auctions</Button></Link>
           <Link href={'create/auction'}><Button className="text-gray-600 font-bold hover:bg-gray-200 hover:text-orange-500" variant={"secondary"}>Create an Auction</Button></Link>
           </div>
         </div>

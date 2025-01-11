@@ -24,6 +24,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.7",
     "axios": "^1.7.9",
+    "circular-json": "^0.5.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",

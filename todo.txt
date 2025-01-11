@@ -1,0 +1,7 @@
+TODO
+
+P2P LISTINGS
+- Connect submit a listing > POST /listings/data
+- Connect get a listing    > GET  /listings/data
+
+

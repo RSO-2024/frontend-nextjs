@@ -34,16 +34,27 @@ export function Navbar() {
       }
     };
 
-    fetchInitialUser();
 
-    // Subscribe to auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        setUser(session?.user ?? null);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
-    });
+    // Fetch user session on component mount
+    useEffect(() => {
+      
+      const user = fetchUser()
+     
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+          setUser(session?.user);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+        }
+      });
+  
+      return () => {
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+      };
+    }, []);
+
 
     // Cleanup subscription on unmount
     return () => {

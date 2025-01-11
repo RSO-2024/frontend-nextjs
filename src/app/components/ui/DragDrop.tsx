@@ -6,7 +6,13 @@ interface UploadedFile {
   preview: string;
 }
 
-const DragDropImageUpload: React.FC = () => {
+interface DragDropImageUploadProps {
+  onFilesChange: (files: UploadedFile[]) => void; // Callback to send updated files to the parent
+}
+
+const DragDropImageUpload: React.FC<DragDropImageUploadProps> = ({
+  onFilesChange,
+}) => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -14,7 +20,9 @@ const DragDropImageUpload: React.FC = () => {
       file,
       preview: URL.createObjectURL(file),
     }));
-    setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    const updatedFiles = [...uploadedFiles, ...newFiles];
+    setUploadedFiles(updatedFiles);
+    onFilesChange(updatedFiles); // Notify the parent component
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -26,9 +34,11 @@ const DragDropImageUpload: React.FC = () => {
   });
 
   const removeFile = (fileToRemove: UploadedFile) => {
-    setUploadedFiles((prevFiles) =>
-      prevFiles.filter((file) => file.preview !== fileToRemove.preview)
+    const updatedFiles = uploadedFiles.filter(
+      (file) => file.preview !== fileToRemove.preview
     );
+    setUploadedFiles(updatedFiles);
+    onFilesChange(updatedFiles); // Notify the parent component
   };
 
   return (
@@ -67,3 +77,4 @@ const DragDropImageUpload: React.FC = () => {
 };
 
 export default DragDropImageUpload;
+
