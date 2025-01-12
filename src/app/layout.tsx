@@ -4,8 +4,6 @@ import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
 
-
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -29,10 +27,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Navbar/>
-        {children}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+      >
+        <Navbar />
+        <main className="flex-grow">
+          {children}
+        </main>
         <Toaster />
+        <footer className="bg-gray-800 text-white py-6">
+          <div className="container mx-auto px-4 text-center">
+            <p>&copy; 2025 ClutchBids. All rights reserved.</p>
+          </div>
+        </footer>
       </body>
     </html>
   );

@@ -38,8 +38,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-
-
 export default function BestValueClient({ id }: { id: string }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,16 +46,22 @@ export default function BestValueClient({ id }: { id: string }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [favorite, setFavorite] = useState<boolean>(false);
   const [newPrice, setNewPrice] = useState<number>(0);
-  const handleInserts = (payload: any) => {
-    console.log('Change received!', payload)
-    setNewPrice(payload.new.possiblePrice)
-    console.log(payload.new.possiblePrice)
-  }
-  supabase
-  .channel('auction_listings')
-  .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'auction_listings' }, handleInserts)
-  .subscribe()
+  const [bidAmount, setBidAmount] = useState<number>(0);
+  const auctionFee = 1000;
 
+  const handleInserts = (payload: any) => {
+    console.log("Change received!", payload);
+    setNewPrice(payload.new.possiblePrice);
+    console.log(payload.new.possiblePrice);
+  };
+  supabase
+    .channel("auction_listings")
+    .on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "auction_listings" },
+      handleInserts
+    )
+    .subscribe();
 
   useEffect(() => {
     if (!id || typeof id !== "string") {
@@ -72,7 +76,7 @@ export default function BestValueClient({ id }: { id: string }) {
         if (user) {
           setUserId(user.id);
         } else {
-            setUserId(null);
+          setUserId(null);
         }
         if (user && user.id) {
           const { data: existingEntry } = await supabase
@@ -92,7 +96,7 @@ export default function BestValueClient({ id }: { id: string }) {
           id as string,
           token
         );
-        setNewPrice(data!.possiblePrice)
+        setNewPrice(data!.possiblePrice);
         if (!data) {
           throw new Error("Product not found.");
         }
@@ -131,6 +135,11 @@ export default function BestValueClient({ id }: { id: string }) {
       </div>
     );
   }
+
+  const handleBidSubmit = () => {
+    const finalCost = bidAmount + auctionFee + product!.deliveryPrice;
+    // alert(`Your final cost will be €${finalCost.toLocaleString()}`);
+  };
 
   return (
     <div className="bg-white">
@@ -321,6 +330,49 @@ export default function BestValueClient({ id }: { id: string }) {
               </h2>
               {/* You can add more details here if needed */}
             </section>
+
+            {/* Bid Submission */}
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-sm/6 font-medium text-gray-900"
+              >
+                New bid
+              </label>
+              <div className="mt-2">
+                <div className="flex items-center rounded-md bg-white px-3 outline-1 -outline-offset-1 outline-gray-900 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                  <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6">
+                    €
+                  </div>
+                  <input
+                    id="price"
+                    name="price"
+                    type="number"
+                    placeholder="0.00"
+                    aria-describedby="price-currency"
+                    value={bidAmount}
+                    onChange={(e) => setBidAmount(Number(e.target.value))}
+                    className="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                  />
+                  <div
+                    id="price-currency"
+                    className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6"
+                  >
+                    EUR
+                  </div>
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  {`Final value: ${(bidAmount+1000+product.deliveryPrice).toFixed(2)} EUR`}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleBidSubmit}
+                className="mt-4 flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                Submit Bid
+              </button>
+            </div>
           </div>
         </div>
       </div>
