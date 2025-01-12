@@ -48,9 +48,7 @@ const AboutPage: React.FC = () => {
         <section>
           <h2 className="text-2xl font-semibold mb-4">Team</h2>
           <p className="text-lg leading-relaxed">
-            Created by Group 10:
-            <br />
-            Gasper Pistotnik, Martin Korelic, Jakob Adam Šircelj
+            Created by Group 10
           </p>
         </section>
       </main>
