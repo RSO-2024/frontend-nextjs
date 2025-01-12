@@ -9,6 +9,10 @@ import { supabase, fetchUser, fetchToken } from "@/app/client";
 // Import the getBestValueCarById function directly
 import { getBestValueCarById } from "@/lib/getBestValueFilters";
 import { set } from "date-fns";
+import { AppBuildManifestPlugin } from "next/dist/build/webpack/plugins/app-build-manifest-plugin";
+import { toast } from "@/hooks/use-toast";
+import { CheckCircle } from "lucide-react";
+import { XCircleIcon } from "@heroicons/react/20/solid";
 
 // Define TypeScript interfaces for type safety
 interface Photo {
@@ -42,7 +46,8 @@ export default function BestValueClient({ id }: { id: string }) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [haveBid, setHaveBid] = useState<boolean>(false);
+  const [isMyBid, setIsMyBid] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [favorite, setFavorite] = useState<boolean>(false);
   const [newPrice, setNewPrice] = useState<number>(0);
@@ -52,6 +57,12 @@ export default function BestValueClient({ id }: { id: string }) {
   const handleInserts = (payload: any) => {
     console.log("Change received!", payload);
     setNewPrice(payload.new.possiblePrice);
+    setBidAmount(payload.new.possiblePrice + 100);
+    if (payload.new.lastBidderId === userId) {
+      setIsMyBid(true);
+    } else {
+      setIsMyBid(false);
+    }
     console.log(payload.new.possiblePrice);
   };
   supabase
@@ -97,6 +108,7 @@ export default function BestValueClient({ id }: { id: string }) {
           token
         );
         setNewPrice(data!.possiblePrice);
+        setBidAmount(data!.possiblePrice+100);
         if (!data) {
           throw new Error("Product not found.");
         }
@@ -136,8 +148,39 @@ export default function BestValueClient({ id }: { id: string }) {
     );
   }
 
-  const handleBidSubmit = () => {
+  const handleBidSubmit = async () => {
     const finalCost = bidAmount + auctionFee + product!.deliveryPrice;
+    if (bidAmount < product!.possiblePrice) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "New bid must be higher than the current price",
+      });
+    } else {
+      const { data, error } = await supabase
+        .from("auction_listings")
+        .update({ possiblePrice: bidAmount, lastBidderId: userId })
+        .eq("id", id)
+        .select();
+        
+      console.log(error);
+if(!error){
+  setHaveBid(true);
+  toast({
+    variant: "default",
+    title: "Success",
+    description: "Your bid has been submitted",
+  });
+}else{
+  toast({
+    variant: "destructive",
+    title: "Error",
+    description: "Failed to submit bid",
+  });
+}
+      
+    }
+
     // alert(`Your final cost will be €${finalCost.toLocaleString()}`);
   };
 
@@ -211,7 +254,43 @@ export default function BestValueClient({ id }: { id: string }) {
                 </p>
               )}
             </div>
-
+            {isMyBid ? (
+              <div className="rounded-md bg-green-50 p-4 m-5">
+                <div className="flex">
+                  <div className="shrink-0">
+                    <CheckCircle
+                      aria-hidden="true"
+                      className="size-5 text-green-400"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-green-800">
+                      Highest bid
+                    </h3>
+                    <div className="mt-2 text-sm text-green-700">
+                      <p>Hooray! Your bid is currently the highest</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              haveBid && (
+              <div className="rounded-md bg-red-50 p-4 m-5">
+                <div className="flex">
+                  <div className="shrink-0">
+                    <XCircleIcon
+                      aria-hidden="true"
+                      className="size-5 text-red-400"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">
+                      You have been outbid
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            ))}
             {/* Additional Data */}
             <div className="mt-6">
               <h3 className="sr-only">Description</h3>
@@ -362,7 +441,11 @@ export default function BestValueClient({ id }: { id: string }) {
                   </div>
                 </div>
                 <p className="mt-2 text-sm text-gray-500">
-                  {`Final value: ${(bidAmount+1000+product.deliveryPrice).toFixed(2)} EUR`}
+                  {`Final value: ${(
+                    bidAmount +
+                    1000 +
+                    product.deliveryPrice
+                  ).toFixed(2)} EUR`}
                 </p>
               </div>
               <button
