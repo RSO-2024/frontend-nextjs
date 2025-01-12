@@ -31,8 +31,8 @@ export const Card: React.FC<CardProps> = ({
         rounded-lg flex flex-col items-center overflow-hidden hover:shadow-lg
         transition-all duration-200 hover:scale-105
         hover:border-gray-400">
-            <div className="h-[200px] overflow-hidden">
-                <img src={imageUrl} alt="" className="object-cover w-full h-full" />
+            <div className="w-full overflow-hidden">
+                <img src={imageUrl} alt="" className="object-cover w-full h-full rounded-t-lg" />
             </div>
 
             <div className='w-full flex items-baseline justify-between px-2 py-2
